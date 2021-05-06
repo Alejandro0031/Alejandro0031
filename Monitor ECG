@@ -1,0 +1,86 @@
+procesamiento de importación.serie . * ;
+
+Serial  MiPuerto ;
+int  CantidadPuntos  =  200 ;
+int  PuntosSensor [];
+int  Punto  =  0 ;
+ configuración vacía () {
+  // Tamano de la aplicasion
+
+  // Opcion 1 tu pones el ancho y alto
+  tamaño ( 700 , 400 );
+
+  // Opcion 2 Pantalla Completa
+  // / fullScreen ();
+
+
+  // println (Serial.list ());
+
+  // Conectarte con el Arduino
+
+  // Opcion 1 Conectarte Escribiendo
+  MiPuerto  =  nueva  Serie ( esto , " / dev / ttyUSB0 " , 9600 );
+
+  // Opcion 2 Conectarte AutoMaticamente
+  / * int i = 0;
+   while (MiPuerto == null) {
+   intentar {
+   MiPuerto = nuevo Serial (este, Serial.list () [i], 9600);
+   print ("Conectado con" + Serial.list () [i]);
+   rotura;
+   } 
+   captura (Excepción e) {
+   // e.printStackTrace ();
+   }
+   i ++;
+   if (i> = Serial.list (). length) {
+   print ("Error no se Encontro Arduino");
+   while (verdadero) {
+   }
+   }
+   }
+   * /
+
+  MiPuerto . bufferUntil ( ' \ n ' );
+
+  PuntosSensor  =  new  int [ CantidadPuntos ];
+  for ( int i =  0 ; i <  CantidadPuntos ; i ++ ) {
+    PuntosSensor [i] =  altura / 2 ;
+  }
+}
+
+vacío  dibujar () {
+  fondo ( 200 );
+  strokeWeight ( 4 );
+  trazo ( 0 , 100 , 0 );
+  
+  float  PAy  =  PuntosSensor [ 0 ]; // Punto Anterior Y
+  flotar  PAx  =  0 ; // Punto Anteriro X
+  float  PasosX  =  float ( ancho ) / CantidadPuntos ; // Cantidad de pasos entre cada punto en X
+  for ( int i =  1 ; i <  CantidadPuntos ; i ++ ) {
+    línea ( PAx , PAy , PAx  +  PasosX , PuntosSensor [i]);
+    PAy  =  PuntosSensor [i];
+    PAx  =  PAx  +  PasosX ;
+    }
+} 
+
+void  serialEvent ( Serial  p ) {
+
+  Cadena  Mensaje  = p . readString ();
+  if ( Mensaje  ! =  null ) {
+    Mensaje  =  recortar ( Mensaje );
+    int  Valor  =  int ( Mensaje );
+    PuntosSensor [ Punto ] =  int ( mapa ( Valor , 0 , 1024 , 0 , altura ));
+    println ( " valor " +  PuntosSensor [ Punto ]);
+    Punto ++ ;
+    if ( Punto  > =  CantidadPuntos ) {
+      Punto  =  0 ;
+    }
+  }
+}
+
+void  keyPressed () {
+  if ( clave  ==  ' s '  ||  clave  ==  ' S ' ) {
+    saveFrame ( " ECG - ######. png " );
+  }
+}
